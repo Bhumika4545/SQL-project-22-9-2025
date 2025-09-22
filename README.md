@@ -1,57 +1,97 @@
--- Create Database
-CREATE DATABASE ecommerce;
-USE ecommerce;
+📌 Database: ecommerce
 
--- Customers Table
-CREATE TABLE Customers (
-    customer_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    phone VARCHAR(15),
-    address TEXT
-);
+This database is designed to manage an online shopping system, handling customers, products, orders, payments, and related entities.
 
--- Categories Table
-CREATE TABLE Categories (
-    category_id INT AUTO_INCREMENT PRIMARY KEY,
-    category_name VARCHAR(100) NOT NULL
-);
+1. Customers Table
 
--- Products Table
-CREATE TABLE Products (
-    product_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    price DECIMAL(10,2) NOT NULL,
-    stock INT DEFAULT 0,
-    category_id INT,
-    FOREIGN KEY (category_id) REFERENCES Categories(category_id)
-);
+Purpose: Stores information about customers who shop on the platform.
 
--- Orders Table
-CREATE TABLE Orders (
-    order_id INT AUTO_INCREMENT PRIMARY KEY,
-    customer_id INT,
-    order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    total DECIMAL(10,2),
-    FOREIGN KEY (customer_id) REFERENCES Customers(customer_id)
-);
+Key Fields:
 
--- Order_Items Table (M:N relationship)
-CREATE TABLE Order_Items (
-    order_id INT,
-    product_id INT,
-    quantity INT NOT NULL,
-    PRIMARY KEY (order_id, product_id),
-    FOREIGN KEY (order_id) REFERENCES Orders(order_id),
-    FOREIGN KEY (product_id) REFERENCES Products(product_id)
-);
+customer_id: Unique identifier for each customer.
 
--- Payments Table
-CREATE TABLE Payments (
-    payment_id INT AUTO_INCREMENT PRIMARY KEY,
-    order_id INT UNIQUE,
-    amount DECIMAL(10,2) NOT NULL,
-    payment_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    method ENUM('Credit Card', 'UPI', 'Cash', 'NetBanking'),
-    FOREIGN KEY (order_id) REFERENCES Orders(order_id)
-);
+name: Full name of the customer.
+
+email: Unique email address (used for login/communication).
+
+phone: Contact number.
+
+address: Shipping/billing address.
+
+2. Categories Table
+
+Purpose: Organizes products into different categories (e.g., Electronics, Clothing, Furniture).
+
+Key Fields:
+
+category_id: Unique identifier for each category.
+
+category_name: Name of the category.
+
+3. Products Table
+
+Purpose: Stores details of items available for sale.
+
+Key Fields:
+
+product_id: Unique identifier for each product.
+
+name: Product name.
+
+price: Cost of the product.
+
+stock: Available quantity in inventory.
+
+category_id: Links product to a category (Foreign Key → Categories).
+
+4. Orders Table
+
+Purpose: Represents purchase transactions made by customers.
+
+Key Fields:
+
+order_id: Unique identifier for each order.
+
+customer_id: Customer who placed the order (Foreign Key → Customers).
+
+order_date: Date and time of order creation.
+
+total: Total order amount.
+
+5. Order_Items Table
+
+Purpose: Manages the many-to-many relationship between Orders and Products.
+
+Key Fields:
+
+order_id: Links to the order (Foreign Key → Orders).
+
+product_id: Links to the product (Foreign Key → Products).
+
+quantity: Number of units of that product in the order.
+
+6. Payments Table
+
+Purpose: Stores payment details for each order.
+
+Key Fields:
+
+payment_id: Unique identifier for each payment.
+
+order_id: Links payment to the order (Foreign Key → Orders).
+
+amount: Payment amount.
+
+payment_date: Date and time of payment.
+
+method: Payment method (Credit Card, UPI, Cash, NetBanking).
+
+✅ Overall Explanation:
+
+Customers place Orders.
+
+Each order contains multiple Products (via Order_Items).
+
+Each order has one Payment record.
+
+Products are grouped under Categories.
